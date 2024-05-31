@@ -1,0 +1,26 @@
+body {
+    background-color: #ffeba7;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+}
+
+#videoContainer {
+    display: none;
+    margin-top: 20px;
+}
+
+#passwordInput {
+    margin-top: 20px;
+}
+
+#message {
+    color: red;
+    margin-top: 10px;
+}
+
+.text {
+    color: #102770;
+}

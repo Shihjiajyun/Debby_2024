@@ -1,0 +1,68 @@
+body {
+    background-color: #ffeba7;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body,
+html {
+    height: 90%;
+    width: 100%;
+    font-family: Arial, sans-serif;
+}
+
+.fullscreen-block {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 90vh;
+    width: 100%;
+    background-color: #ffeba7;
+    /* 可根據需要更改背景色 */
+    position: relative;
+}
+
+.message {
+    font-size: 24px;
+    color: #333;
+    text-align: center;
+}
+
+.arrow {
+    position: absolute;
+    bottom: 20px;
+    /* 可根據需要調整位置 */
+    font-size: 36px;
+    color: #333;
+    cursor: pointer;
+    animation: bounce 2s infinite;
+}
+
+/* 添加箭頭的動畫效果 */
+@keyframes bounce {
+
+    0%,
+    20%,
+    50%,
+    80%,
+    100% {
+        transform: translateY(0);
+    }
+
+    40% {
+        transform: translateY(-10px);
+    }
+
+    60% {
+        transform: translateY(-5px);
+    }
+}
+
+.text {
+    color: #102770;
+}

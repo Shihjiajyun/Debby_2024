@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的家鄉沒有英文</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+    <link rel="stylesheet" href="1-2.css">
+
+</head>
+
+<body>
+    <h1 class="text">我想跟你說</h1>
+    <p class="text">每次不管是跟你見面還是傳訊息，我都好快樂，是那種發自內心的快樂；是那種可能約下午三點見面，我從早上就會開始期待的快樂；是那種只要聽到你的笑聲，我就會忘記所有煩惱的快樂</p>
+    <p class="text">你曾經說過，你覺得你的聲音很好聽(WhatsApp的錄音真的品質真的超好)，我想說，你的笑聲我覺得潛力更大!!!</p>
+    <!-- <p class="text">雖然說你唱歌真的不錯啦(至少已經比我好了)，但我覺得你真的有搞笑的天分</p> -->
+    <div id="videoContainer">
+        <video width="200" controls>
+            <source src="123.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+    </div>
+    <div id="passwordInput">
+        <label for="password" class="text">請輸入密碼觀看影片(密碼是我們第一天見面的日期，四碼):</label>
+        <input type="password" id="password" name="password">
+        <button type="button" class="btn btn-outline-danger" onclick="checkPassword()">提交</button>
+    </div>
+    <div id="message"></div>
+    <p class="text">恭喜你收集到第一個結局，如果想要回去首頁請點選按鈕</p>
+    <button type="button" class="btn btn-outline-danger" onclick="window.location.href='index.html'">返回首頁</button>
+
+
+    <script>
+        function checkPassword() {
+            var password = document.getElementById("password").value;
+            var correctPassword = "0703"; // 這是正確的密碼
+
+            if (password === correctPassword) {
+                document.getElementById("videoContainer").style.display = "block";
+                document.getElementById("passwordInput").style.display = "none";
+                document.getElementById("message").textContent = "";
+            } else {
+                document.getElementById("message").textContent = "密碼錯誤";
+            }
+        }
+    </script>
+</body>
+
+</html>
