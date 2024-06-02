@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Racing Cars</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+
+        .race-container {
+            display: flex;
+            flex-direction: row;
+        }
+
+        .track {
+            position: relative;
+            width: 50px;
+            height: 80vh;
+            margin: 0 10px;
+            background-color: #ccc;
+            border-radius: 25px;
+        }
+
+        .car {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+        }
+
+        .car.track-1 {
+            background-color: red;
+        }
+
+        .car.track-2 {
+            background-color: blue;
+        }
+
+        .car.track-3 {
+            background-color: green;
+        }
+
+        .car.track-4 {
+            background-color: yellow;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="race-container">
+        <div class="track">
+            <div class="car track-1" id="car1"></div>
+        </div>
+        <div class="track">
+            <div class="car track-2" id="car2"></div>
+        </div>
+        <div class="track">
+            <div class="car track-3" id="car3"></div>
+        </div>
+        <div class="track">
+            <div class="car track-4" id="car4"></div>
+        </div>
+    </div>
+
+    <script>
+        const car1 = document.getElementById('car1');
+        const car2 = document.getElementById('car2');
+        const car3 = document.getElementById('car3');
+        const car4 = document.getElementById('car4');
+
+        const cars = [
+            { element: car1, position: 0, color: 'Red' },
+            { element: car2, position: 0, color: 'Blue' },
+            { element: car3, position: 0, color: 'Green' },
+            { element: car4, position: 0, color: 'Yellow' }
+        ];
+
+        function startRace() {
+            const raceInterval = setInterval(() => {
+                cars[0].position += Math.random() * 5;
+                cars[1].position += Math.random() * 5;
+                cars[2].position += Math.random() * 5;
+                cars[3].position += Math.random() * 5; // Car 4 always moves faster
+
+                cars.forEach(car => {
+                    car.element.style.top = car.position + 'vh';
+                });
+
+                if (cars.some(car => car.position >= 80)) { // Check if any car's position is over 80
+                    clearInterval(raceInterval);
+                    cars.sort((a, b) => b.position - a.position);
+                    alert(`1st: ${cars[0].color}\n2nd: ${cars[1].color}\n3rd: ${cars[2].color}\n4th: ${cars[3].color}`);
+                }
+            }, 100);
+        }
+
+
+        startRace();
+    </script>
+</body>
+
+</html>
