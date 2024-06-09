@@ -22,7 +22,7 @@ document.getElementById('breakButton').addEventListener('click', function () {
         } else {
             // Show alert after cat finishes eating text
             setTimeout(() => {
-                alert("貓咪吃飽了!");
+                alert("貓咪吃飽了!可以選擇其他選項了");
             }, catSpeed); // 與貓咪吃文字的速度相同
         }
     }

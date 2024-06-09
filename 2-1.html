@@ -4,106 +4,104 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Racing Cars</title>
-    <style>
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #f0f0f0;
-        }
-
-        .race-container {
-            display: flex;
-            flex-direction: row;
-        }
-
-        .track {
-            position: relative;
-            width: 50px;
-            height: 80vh;
-            margin: 0 10px;
-            background-color: #ccc;
-            border-radius: 25px;
-        }
-
-        .car {
-            position: absolute;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-        }
-
-        .car.track-1 {
-            background-color: red;
-        }
-
-        .car.track-2 {
-            background-color: blue;
-        }
-
-        .car.track-3 {
-            background-color: green;
-        }
-
-        .car.track-4 {
-            background-color: yellow;
-        }
-    </style>
+    <title>Document</title>
+    <link rel="stylesheet" href="./2-1.css">
 </head>
 
 <body>
-    <div class="race-container">
-        <div class="track">
-            <div class="car track-1" id="car1"></div>
-        </div>
-        <div class="track">
-            <div class="car track-2" id="car2"></div>
-        </div>
-        <div class="track">
-            <div class="car track-3" id="car3"></div>
-        </div>
-        <div class="track">
-            <div class="car track-4" id="car4"></div>
-        </div>
+    <h1>這就是我的生活，活在一台電腦裡面，時不時打打程式碼，再做個3D建模，快樂到不行ㄚㄚㄚ</h1>
+    <canvas class="webgl"></canvas>
+    <div id="loader">
+        <h1>Loading</h1>
     </div>
-
-    <script>
-        const car1 = document.getElementById('car1');
-        const car2 = document.getElementById('car2');
-        const car3 = document.getElementById('car3');
-        const car4 = document.getElementById('car4');
-
-        const cars = [
-            { element: car1, position: 0, color: 'Red' },
-            { element: car2, position: 0, color: 'Blue' },
-            { element: car3, position: 0, color: 'Green' },
-            { element: car4, position: 0, color: 'Yellow' }
-        ];
-
-        function startRace() {
-            const raceInterval = setInterval(() => {
-                cars[0].position += Math.random() * 5;
-                cars[1].position += Math.random() * 5;
-                cars[2].position += Math.random() * 5;
-                cars[3].position += Math.random() * 5; // Car 4 always moves faster
-
-                cars.forEach(car => {
-                    car.element.style.top = car.position + 'vh';
-                });
-
-                if (cars.some(car => car.position >= 80)) { // Check if any car's position is over 80
-                    clearInterval(raceInterval);
-                    cars.sort((a, b) => b.position - a.position);
-                    alert(`1st: ${cars[0].color}\n2nd: ${cars[1].color}\n3rd: ${cars[2].color}\n4th: ${cars[3].color}`);
-                }
-            }, 100);
-        }
-
-
-        startRace();
-    </script>
 </body>
+<!-- <script src="./2-1.js"></script> -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r124/three.min.js"></script>
+<script src="https://unpkg.com/three@0.126.0/examples/js/loaders/GLTFLoader.js"></script>
+<script src="https://unpkg.com/three@0.126.0/examples/js/controls/OrbitControls.js"></script>
+<script>const loading = document.querySelector('#loader')
+
+    const canvas = document.querySelector('.webgl')
+    const scene = new THREE.Scene()
+    const textureLoader = new THREE.TextureLoader()
+    const sizes = {
+        width: window.innerWidth,
+        height: window.innerHeight
+    }
+
+    // Base camera
+    const camera = new THREE.PerspectiveCamera(10, sizes.width / sizes.height, 0.1, 100)
+    camera.position.x = 8
+    camera.position.y = 4
+    camera.position.z = 15
+    scene.add(camera)
+
+    //Controls
+    const controls = new THREE.OrbitControls(camera, canvas)
+    controls.enableDamping = true
+    controls.enableZoom = true
+    controls.enablePan = true
+    controls.minDistance = 21
+    controls.maxDistance = 50
+    controls.minPolarAngle = Math.PI / 5
+    controls.maxPolarAngle = Math.PI / 2
+
+    // Renderer
+    const renderer = new THREE.WebGLRenderer({
+        canvas: canvas,
+        antialias: true,
+        alpha: true
+    })
+
+    renderer.setSize(sizes.width, sizes.height)
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+    renderer.outputEncoding = THREE.sRGBEncoding
+
+    // Materials
+    const bakedTexture = textureLoader.load('https://rawcdn.githack.com/ricardoolivaalonso/ThreeJS-Room13/47b05e2db4e49eec33d63729e920894a906cb693/static/baked.jpg')
+    bakedTexture.flipY = false
+    bakedTexture.encoding = THREE.sRGBEncoding
+
+    const bakedMaterial = new THREE.MeshBasicMaterial({ map: bakedTexture })
+
+    //Loader
+    const loader = new THREE.GLTFLoader()
+    loader.load('https://rawcdn.githack.com/ricardoolivaalonso/ThreeJS-Room13/47b05e2db4e49eec33d63729e920894a906cb693/static/model.glb',
+        (gltf) => {
+            const model = gltf.scene
+            model.traverse(child => child.material = bakedMaterial)
+            scene.add(model)
+            scene.position.set(0, .2, 0)
+            loading.style.display = 'none'
+
+        },
+        (xhr) => {
+            console.log((xhr.loaded / xhr.total * 100) + '% loaded')
+        }
+    )
+
+
+    window.addEventListener('resize', () => {
+        sizes.width = window.innerWidth
+        sizes.height = window.innerHeight
+        camera.aspect = sizes.width / sizes.height
+        camera.updateProjectionMatrix()
+        renderer.setSize(sizes.width, sizes.height)
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+    })
+    // Animation
+
+    var minPan = new THREE.Vector3(-2, -.5, -2)
+    var maxPan = new THREE.Vector3(2, .5, 2)
+
+    const tick = () => {
+        controls.update()
+        controls.target.clamp(minPan, maxPan)
+        renderer.render(scene, camera)
+        window.requestAnimationFrame(tick)
+    }
+
+    tick()
+</script>
 
 </html>

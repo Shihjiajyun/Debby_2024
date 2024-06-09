@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>打地鼠遊戲</title>
+    <link rel="stylesheet" href="2-2.css">
+</head>
+
+<body>
+    <h1>打地鼠遊戲</h1>
+    <p>裡面一共有九張照片，每張照片代表一個故事，有些事我們同時在場的，有些則時只有我自己一人在場的</p>
+    <p>你的工作就是要點擊那些我們同時在場的故事，成功就加一分，反之則扣分</p>
+    <p>加油 盧森堡!!!!</p>
+    <div id="score-board">
+        <p>分數: <span id="score">0</span></p>
+    </div>
+
+
+    <button id="start-button">開始遊戲</button>
+    <div id="game-board">
+        <div class="hole" data-index="0">
+            <div class="mole good-mole"><img src="1.jpg" alt="Good Mole" style="object-fit: cover;"></div>
+        </div>
+        <div class="hole" data-index="1">
+            <div class="mole bad-mole"><img src="5.jpg" alt="Bad Mole" style="object-fit: cover;"></div>
+        </div>
+        <div class="hole" data-index="2">
+            <div class="mole good-mole"><img src="2.jpg" alt="Good Mole" style="object-fit: cover;"></div>
+        </div>
+        <div class="hole" data-index="3">
+            <div class="mole bad-mole"><img src="6.jpg" alt="Bad Mole" style="object-fit: cover;"></div>
+        </div>
+        <div class="hole" data-index="4">
+            <div class="mole good-mole"><img src="3.jpg" alt="Good Mole" style="object-fit: cover;"></div>
+        </div>
+        <div class="hole" data-index="5">
+            <div class="mole bad-mole"><img src="7.jpg" alt="Bad Mole" style="object-fit: cover;"></div>
+        </div>
+        <div class="hole" data-index="6">
+            <div class="mole good-mole"><img src="4.jpg" alt="Good Mole" style="object-fit: cover;"></div>
+        </div>
+        <div class="hole" data-index="7">
+            <div class="mole bad-mole"><img src="5.jpg" alt="Bad Mole" style="object-fit: cover;"></div>
+        </div>
+        <div class="hole" data-index="8">
+            <div class="mole good-mole"><img src="6.jpg" alt="Good Mole" style="object-fit: cover;"></div>
+        </div>
+    </div>
+    <div id="end-screen" style="display: none;">
+        <p id="end-message"></p>
+        <button id="next-button">下一頁</button>
+    </div>
+    <script>
+        // script.js
+        let score = 0;
+        let lastHole;
+        let timeUp = false;
+        let gameDuration = 20000; // 20秒
+        let moleUpTime = 2000; // 地鼠上升時間
+        let moleStayTime = 1000; // 地鼠在最高點的停留時間
+        let allMoles = Array.from(document.querySelectorAll('.hole')); // 所有地鼠洞
+        let shuffledMoles = shuffle([...allMoles]); // 洗牌後的地鼠洞
+
+        function randomTime(min, max) {
+            return Math.round(Math.random() * (max - min) + min);
+        }
+
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function randomHole(holes) {
+            if (shuffledMoles.length === 0) {
+                shuffledMoles = shuffle([...allMoles]);
+            }
+            const hole = shuffledMoles.pop();
+            if (hole === lastHole) {
+                return randomHole(holes);
+            }
+            lastHole = hole;
+            return hole;
+        }
+
+        function peep() {
+            const time = randomTime(200, moleUpTime);
+            const hole = randomHole(document.querySelectorAll('.hole'));
+            const mole = hole.querySelector('.mole');
+            mole.classList.add('up');
+            setTimeout(() => {
+                mole.classList.remove('up');
+                if (!timeUp) setTimeout(peep, moleStayTime);
+            }, time);
+        }
+
+        function startGame() {
+            score = 0;
+            timeUp = false;
+            document.getElementById('score').textContent = score;
+            document.getElementById('end-screen').style.display = 'none';
+            peep();
+            setTimeout(() => {
+                timeUp = true;
+                endGame();
+            }, gameDuration);
+        }
+
+        function endGame() {
+            let message = "";
+            if (score < 0) {
+                message = "應該是因為我的遊戲沒有優化，有很多漏洞，希望你沒有玩到爆氣，你可以點擊下方按鈕前往下一頁了";
+            } else if (score < 5) {
+                message = "我自己玩的最高分也才3分，你可以點擊下方按鈕前往下一頁了";
+            } else {
+                message = "66666666666，你可以點擊下方按鈕前往下一頁了";
+            }
+            alert(`遊戲結束！你的分數是 ${score}。${message}`);
+            document.getElementById('end-screen').style.display = 'block';
+        }
+
+        function bonk(e) {
+            if (!e.isTrusted) return; // 檢查是否為人工點擊
+            if (!e.target.closest('.mole').classList.contains('up')) return; // 檢查是否打中了地鼠
+            const mole = e.target.closest('.mole');
+            if (mole.classList.contains('bad-mole')) {
+                score--;
+            } else {
+                score++;
+            }
+            mole.classList.remove('up');
+            document.getElementById('score').textContent = score;
+        }
+
+        document.querySelectorAll('.mole').forEach(mole => mole.addEventListener('click', bonk));
+        document.getElementById('start-button').addEventListener('click', startGame);
+        document.getElementById('next-button').addEventListener('click', () => {
+            window.location.href = '3-1.html'; // 替換成你要跳轉的頁面URL
+        });
+
+    </script>
+</body>
+
+</html>
